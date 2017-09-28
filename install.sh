@@ -46,7 +46,7 @@ function install-common-packages() {
 	ubuntu_version=`lsb_release -sr`
 	if [ "$ubuntu_version" == "17.04" ] || [ "$ubuntu_version" == "16.04" ]
 	then
-		add-apt-repository cloud-archive:ocata
+		add-apt-repository cloud-archive:pike
 	else
 		echo "Ocata release supported only on Zesty (17.04) and Xenial (16.04)"
 		exit 1;
@@ -79,9 +79,9 @@ function install-controller-packages() {
 	
 	echo "Installing Nova for Controller"
 	sleep 2
-	apt-get install nova-api nova-cert nova-conductor nova-consoleauth nova-novncproxy \
-	nova-scheduler nova-placement-api python-novaclient -y
-
+	#apt-get install nova-api nova-conductor nova-consoleauth nova-novncproxy nova-scheduler nova-placement-api python-novaclient -y
+	apt install nova-api nova-conductor nova-consoleauth nova-novncproxy nova-scheduler nova-placement-api -y
+	
 	install-neutron-packages-controller
 	
 	echo "Installing Horizon..."
