@@ -6,14 +6,14 @@ function remove-common-packages() {
 	apt-get purge chrony -y
 	apt-get purge python-openstackclient -y
 	ubuntu_version=`lsb_release -sr`
-        if [ "$ubuntu_version" == "14.04" ]
+        if [ "$ubuntu_version" == "16.04" ]
         then
-		echo "About to remove cloud-archive:mitaka"
+		echo "Preparando para eliminar los servicios de Openstack"
 		sleep 2
-		add-apt-repository --remove cloud-archive:mitaka
+		add-apt-repository --remove cloud-archive:pike
 		sleep 2
 	fi
-	echo "Doing full system update"
+	echo "Haciendo un update & upgrade & dist-upgrade"
         sleep 2
         apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y
         apt-get autoremove -y
@@ -21,7 +21,7 @@ function remove-common-packages() {
 }
 
 function remove-compute-packages() {
-	echo "About to remove packages for Compute Node"
+	echo "Eliminando paquetería de Compute"
 	sleep 2
 	apt-get purge nova-compute sysfsutils -y
 	apt-get purge neutron-plugin-linuxbridge-agent conntrack -y
@@ -31,7 +31,7 @@ function remove-compute-packages() {
 
 function remove-controller-packages() {
 	stop-controller-services
-	echo "About to remove packages for Controller Node"
+	echo "Eliminando paquetería de Controller"
 	sleep 2
 	apt-get purge mariadb-server python-mysqldb -y
 	apt-get purge rabbitmq-server -y
@@ -51,7 +51,7 @@ function remove-controller-packages() {
 }
 
 function remove-networknode-packages() {
-	echo "About to remove packages for Network Node"
+	echo "Eliminando paquetería de Red"
 	sleep 2
 	apt-get purge neutron-plugin-ml2 neutron-plugin-openvswitch-agent \
 	neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent -y
@@ -60,7 +60,7 @@ function remove-networknode-packages() {
 
 
 node_type=`bash $(dirname $0)/util/detect-nodetype.sh`
-echo "Node Type detected as: $node_type"
+echo "Nodo detectado como: $node_type"
 sleep 5
 case $node_type in
 	allinone)
@@ -82,7 +82,7 @@ case $node_type in
 		remove-networknode-packages
 		;;
 	*)
-		echo "Unsupported Node type for $0: $node_type"
+		echo "Tipo de Nodo no soportado $0: $node_type"
 		exit 1;
 esac
 remove-common-packages
