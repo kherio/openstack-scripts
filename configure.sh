@@ -1,11 +1,11 @@
 dir_path=$(dirname $0)
 node_type=`bash $dir_path/util/detect-nodetype.sh`
-echo "Node Type detected as: $node_type"
-echo "Sourcing config-parameters..."
+echo "Tipo de nodo detectado: $node_type"
+echo "Recogiendo los parámetros..."
 source $dir_path/lib/config-parameters.sh
-echo "Management interface: "$mgmt_interface
-echo "Data Path interface: "$data_interface
-echo "Controller Host Name: "$controller_host_name
+echo "Interfaz de Gestion: "$mgmt_interface
+echo "Interfaz para PUB/PVT: "$data_interface
+echo "Nombre del Host Controller: "$controller_host_name
 
 bash $dir_path/util/backup-restore-config-files.sh backup $dir_path/config_file_backup/
 echo "Backed up Config files"
@@ -13,46 +13,46 @@ sleep 5
 
 if [ $# -ne 1 ]
 then
-       	echo "Correct Syntax: $0 <controller_ip_address>"
+       	echo "Sintaxis incorrecta: $0 <controller_ip_address>"
 	exit 1
 fi
 
 if [ "$node_type" == "allinone" ] || [ "$node_type" == "controller" ] 
 then
-	echo "Executing Update /etc/hosts for Controller"
+	echo "ACtualizando /etc/hosts en el Controller..."
 	sleep 5
 	bash $dir_path/util/update-etc-hosts.sh $mgmt_interface $controller_host_name
 else
-	echo "Executing Update /etc/hosts for Other Nodes"
+	echo "Actualizando /etc/hosts en el resto de Nodos..."
 	sleep 5
 	bash $dir_path/util/update-etc-hosts.sh $mgmt_interface $controller_host_name $1
 fi
 
 if [ "$node_type" == "allinone" ]
 	then
-		echo "Configuring packages for All-in-one"
+		echo "Configurando paquetería para All-in-one"
 		sleep 5
 		bash $dir_path/lib/configure-packages.sh controller $1
 		bash $dir_path/lib/configure-packages.sh networknode
 		bash $dir_path/lib/configure-packages.sh compute 
 elif [ "$node_type" == "compute" ] || [ "$node_type" == "networknode" ]
 	then
-		echo "Configuring packages for: "$node_type
+		echo "Configurando paquetería para: "$node_type
 		sleep 5
 		bash $dir_path/lib/configure-packages.sh $node_type 
 elif [ "$node_type" == "controller" ] || [ "$node_type" == "controller_networknode" ]
 	then
-		echo "Configuring packages for Controller and Network Node"
+		echo "Configurando paquetería en Controller y Nodo de Red"
 		sleep 5
 		bash $dir_path/lib/configure-packages.sh controller $1
 else
-	echo "Unsupported Node Type for $0: $node_type"
+	echo "Tipo de nodo no soportado en $0: $node_type"
 	exit 1;
 fi
 
 if [ "$node_type" == "allinone" ] || [ "$node_type" == "controller" ]
 	then
 		echo "************************************"
-		echo "** Execute post-config-actions.sh **"
+		echo "** Ejecuta post-config-actions.sh **"
 		echo "************************************"
 fi
