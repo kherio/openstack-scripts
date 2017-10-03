@@ -1,11 +1,11 @@
 echo "Running: $0 $@"
 dir_path=$(dirname $0)
 node_type=`bash $dir_path/util/detect-nodetype.sh`
-echo "Node Type detected as: $node_type"
+echo "Tipo de nodo detectado: $node_type"
 
 if [ "$node_type" == "allinone" ] || [ "$node_type" == "controller" ] 
 	then
-		echo -n "Do you want to enable Web based access to Logs? [y/n]: "
+		echo -n "Quieres acceder a los LOGs desde la consola web? [y/n]: "
 		read enable_web_log_view
 		if [ "$enable_web_log_view" == "y" ]
 		then
@@ -20,7 +20,7 @@ if [ "$node_type" == "allinone" ] || [ "$node_type" == "controller" ]
 			ln -s /var/log/keystone /var/www/html/oslogs/keystone
 			echo "Visit http://<controller_ip>/oslogs"
 		fi
-		echo -n "Do you want to setup Cirros Image? [y/n]: "
+		echo -n "Quieres descargar e implementar la imagen de Cirros? [y/n]: "
 		read setup_cirros_image
 		if [ "$setup_cirros_image" == "y" ]
 		then
@@ -28,23 +28,23 @@ if [ "$node_type" == "allinone" ] || [ "$node_type" == "controller" ]
 			bash $dir_path/lib/setup-cirros-image.sh Cirros
 			sleep 2
 		fi
-		echo -n "Do you want to setup a Flavor to start instances? [y/n]: "
+		echo -n "Quieres crear un sabor para iniciar instancias? [y/n]: "
 		read setup_flavor
 		if [ "$setup_flavor" == "y" ]
 		then
 			source $dir_path/lib/admin_openrc.sh
-			echo "Setting up Flavor called 'myflavor' with 1 vCPU, 256MB RAM and 500MB disk"
+			echo "Creando el sabor 'myflavor' con 1 vCPU, 256MB RAM y 500MB disk"
 			sleep 1
 			openstack flavor create --public myflavor --id auto --ram 256 --disk 1 --vcpus 1 --rxtx-factor 1
 			sleep 1
 
 		fi
-		echo -n "Do you want to setup OpenStack Network, Subnet and Router? [y/n]: "
+		echo -n "Quieres crear ya una RED, una SUBRED y un ROUTER? [y/n]: "
 		read setup_openstack_network
 		if [ "$setup_openstack_network" == "y" ]
 		then
 			source $dir_path/lib/admin_openrc.sh
-			echo "About to execute OpenStack commands for some basic Network/Subnet/Router etc"
+			echo "Iniciando la creación de una red básica, etc"
 			openstack network create network1
 			sleep 2
 			openstack subnet create --network network1 --subnet-range 20.20.20.0/24 subnet1
@@ -52,7 +52,7 @@ if [ "$node_type" == "allinone" ] || [ "$node_type" == "controller" ]
 			openstack network create network2
 			sleep 2
 			openstack subnet create --network network2 --subnet-range 192.168.150.0/24 subnet2
-			echo "About to create Router and Add Subnets"
+			echo "Iniciando la creación de un Router y una Subred"
 			sleep 2
 			openstack router create router1
 			sleep 2
@@ -61,7 +61,7 @@ if [ "$node_type" == "allinone" ] || [ "$node_type" == "controller" ]
 			openstack router add subnet router1 subnet2
 		fi
 else
-        echo "This command works only on the controller"
+        echo "Este comando solo funciona en un Controller"
 	exit 1
 fi
 
